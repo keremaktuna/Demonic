@@ -35,10 +35,10 @@ void APooledObjects::Deactive()
 
 bool APooledObjects::IsActive()
 {
-	return false;
+	return Active;
 }
 
 int APooledObjects::GetPoolIndex()
 {
-	return 0;
+	return PoolIndex;
 }
