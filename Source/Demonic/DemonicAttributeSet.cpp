@@ -15,11 +15,28 @@ void UDemonicAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 
 bool UDemonicAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
-	float ArmorDamage = FMath::Abs(Data.EvaluatedData.Magnitude);
+	float AbsoluteMagnitude = FMath::Abs(Data.EvaluatedData.Magnitude);
 
-	if(Data.EvaluatedData.Attribute == GetArmorAttribute() && ArmorDamage > GetArmor() && Data.EvaluatedData.Magnitude < 0)
-		Health.SetCurrentValue(Health.GetCurrentValue() - (ArmorDamage - GetArmor()));
+	if(Data.EvaluatedData.Magnitude > 0)
+	{
+		if(Data.EvaluatedData.Attribute == GetArmorAttribute() && GetArmor() + AbsoluteMagnitude >= 100.0f)
+		{
+			SetArmor(100);
+			return false;
+		}
 
+		if(Data.EvaluatedData.Attribute == GetHealthAttribute() && GetHealth() + AbsoluteMagnitude >= 100.0f)
+		{
+			SetHealth(100);
+			return false;
+		}
+	}
+	else
+	{
+		if(Data.EvaluatedData.Attribute == GetArmorAttribute() && AbsoluteMagnitude > GetArmor())
+			Health.SetCurrentValue(Health.GetCurrentValue() - (AbsoluteMagnitude - GetArmor()));
+	}
+	
 	return true;
 }
 
